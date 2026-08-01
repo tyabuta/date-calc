@@ -1,13 +1,27 @@
 import {
   addDays,
+  age,
   breakdown,
   countWeekdays,
+  dayOfYear,
+  daysInYear,
   diffDays,
+  endOfMonth,
+  fiscalYear,
   formatBreakdown,
   formatIso,
   formatJa,
   formatOffset,
+  formatWareki,
+  isBirthday,
+  isHayaumare,
+  isoWeek,
+  kazoedoshi,
+  legalAge,
+  nextBirthday,
   parseDate,
+  schoolGrade,
+  sexagenary,
   sliderBound,
   today,
 } from "./date-calc.js";
@@ -80,6 +94,75 @@ function renderAdd() {
     ]);
 }
 
+function renderInfo() {
+  const out = el("info-result");
+  const date = parseDate(el("info-date").value);
+
+  if (!date) {
+    out.className = "result empty";
+    out.textContent = "日付を入力してください";
+    return;
+  }
+
+  const year = date.getUTCFullYear();
+  const { week, year: weekYear } = isoWeek(date);
+  const eto = sexagenary(year);
+  const last = endOfMonth(date);
+  const doy = dayOfYear(date);
+
+  out.className = "result";
+  out.innerHTML =
+    `<div class="headline">${formatWareki(date)}</div>` +
+    rows([
+      ["西暦", formatJa(date)],
+      ["干支", `${eto.name}（${eto.branch}年）`],
+      ["年度", `${fiscalYear(date)}年度`],
+      ["週番号", `${weekYear}年 第${week}週（ISO 8601）`],
+      ["年内通算", `${ja(doy)}日目 / ${ja(daysInYear(year))}日`],
+      ["月末", `${formatJa(last)}（あと${ja(diffDays(date, last))}日）`],
+    ]);
+}
+
+function renderAge() {
+  const out = el("age-result");
+  const birth = parseDate(el("age-birth").value);
+  const on = parseDate(el("age-on").value);
+
+  if (!birth || !on) {
+    out.className = "result empty";
+    out.textContent = "生年月日と基準日を入力してください";
+    return;
+  }
+  if (birth > on) {
+    out.className = "result empty";
+    out.textContent = "基準日が生年月日より前です";
+    return;
+  }
+
+  const years = age(birth, on);
+  const legal = legalAge(birth, on);
+  const next = nextBirthday(birth, on);
+  const grade = schoolGrade(birth, on);
+
+  const pairs = [
+    ["法律上の年齢", `${ja(legal)}歳${legal === years ? "" : "（誕生日の前日に加算）"}`],
+    ["数え年", `${ja(kazoedoshi(birth, on))}歳`],
+    [
+      "次の誕生日",
+      isBirthday(birth, on)
+        ? "今日が誕生日"
+        : `${formatJa(next)}（あと${ja(diffDays(on, next))}日）`,
+    ],
+    ["生まれてから", `${ja(diffDays(birth, on))}日`],
+    ["早生まれ", isHayaumare(birth) ? "はい（1月1日〜4月1日生まれ）" : "いいえ"],
+  ];
+  if (grade) pairs.push(["学年", `${fiscalYear(on)}年度は ${grade}`]);
+  pairs.push(["生年月日", `${formatJa(birth)} / ${formatWareki(birth)}`]);
+
+  out.className = "result";
+  out.innerHTML = `<div class="headline">${ja(years)}<small>歳</small></div>` + rows(pairs);
+}
+
 /**
  * 日付入力の実態にスライダーを合わせる。範囲も引き直すので、
  * つまみを動かしている最中に呼んではいけない（値が飛ぶ）。
@@ -139,6 +222,9 @@ function init() {
   el("diff-from").value = formatIso(now);
   el("diff-to").value = formatIso(addDays(now, 30));
   el("add-base").value = formatIso(now);
+  el("info-date").value = formatIso(now);
+  el("age-on").value = formatIso(now);
+  // 生年月日は既定値を置かない。今日を入れると 0 歳と出て紛らわしい。
 
   for (const id of ["diff-from", "diff-to"]) {
     el(id).addEventListener("input", () => {
@@ -156,6 +242,11 @@ function init() {
   });
   el("add-slider").addEventListener("input", onAddSlider);
 
+  el("info-date").addEventListener("input", renderInfo);
+  for (const id of ["age-birth", "age-on"]) {
+    el(id).addEventListener("input", renderAge);
+  }
+
   for (const button of document.querySelectorAll("button.today")) {
     button.addEventListener("click", () => setToday(el(button.dataset.target)));
   }
@@ -170,6 +261,8 @@ function init() {
 
   renderDiff();
   renderAdd();
+  renderInfo();
+  renderAge();
   syncDiffSlider();
   syncAddSlider();
 }

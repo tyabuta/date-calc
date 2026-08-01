@@ -115,3 +115,154 @@ export function formatBreakdown({ years, months, days }) {
   if (days || !parts.length) parts.push(`${days}日`);
   return parts.join("");
 }
+
+// ---------------------------------------------------------------- 和暦
+
+// 元号テーブルは持たない。ブラウザ内蔵の ICU が改元日まで含めて知っているので、
+// そちらに任せる。timeZone を UTC に固定しないと、閲覧者のタイムゾーンによって
+// 日付が 1 日ずれる。
+const WAREKI_FORMAT = new Intl.DateTimeFormat("ja-JP-u-ca-japanese", {
+  timeZone: "UTC",
+  era: "long",
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+});
+
+/** 和暦。"令和8年8月1日" の形。1年は「元年」と表記する。 */
+export function formatWareki(date) {
+  const parts = Object.fromEntries(
+    WAREKI_FORMAT.formatToParts(date).map((p) => [p.type, p.value]),
+  );
+  const year = parts.year === "1" ? "元" : parts.year;
+  return `${parts.era}${year}年${parts.month}月${parts.day}日`;
+}
+
+/** 元号だけ。"令和" など。 */
+export function eraName(date) {
+  return WAREKI_FORMAT.formatToParts(date).find((p) => p.type === "era")?.value ?? "";
+}
+
+// ---------------------------------------------------------------- 暦の属性
+
+const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+
+/** 十干十二支。西暦4年が甲子。60年周期。 */
+export function sexagenary(year) {
+  const index = (((year - 4) % 60) + 60) % 60;
+  return {
+    name: `${STEMS[index % 10]}${BRANCHES[index % 12]}`,
+    branch: BRANCHES[index % 12],
+  };
+}
+
+/** 年度。4月始まりなので 1〜3月は前年の年度に属する。 */
+export function fiscalYear(date) {
+  return date.getUTCMonth() + 1 >= 4 ? date.getUTCFullYear() : date.getUTCFullYear() - 1;
+}
+
+/** ISO 8601 の週番号。木曜日を含む週をその年の週とする。 */
+export function isoWeek(date) {
+  // 月曜を 0 とした曜日。そこからその週の木曜へ移動する。
+  const dow = (date.getUTCDay() + 6) % 7;
+  const thursday = addDays(date, 3 - dow);
+  const year = thursday.getUTCFullYear();
+
+  // 1月4日は必ず第1週に含まれる。その週の木曜を基準にする。
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const firstThursday = addDays(jan4, 3 - ((jan4.getUTCDay() + 6) % 7));
+
+  return { year, week: Math.round(diffDays(firstThursday, thursday) / 7) + 1 };
+}
+
+/** 年内通算日。1月1日が 1。 */
+export function dayOfYear(date) {
+  return diffDays(new Date(Date.UTC(date.getUTCFullYear(), 0, 1)), date) + 1;
+}
+
+/** その年の日数。うるう年なら 366。 */
+export function daysInYear(year) {
+  return diffDays(new Date(Date.UTC(year, 0, 1)), new Date(Date.UTC(year + 1, 0, 1)));
+}
+
+/** その月の末日。 */
+export function endOfMonth(date) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0));
+}
+
+// ---------------------------------------------------------------- 年齢
+
+/**
+ * 満年齢。一般的な数え方で、誕生日に加算する。
+ *
+ * 2月29日生まれの平年は、応当日が無いので 2月28日に加算する
+ * （addMonths の月末丸めがそのまま民法143条2項の扱いに一致する）。
+ */
+export function age(birth, on) {
+  let years = on.getUTCFullYear() - birth.getUTCFullYear();
+  if (addMonths(birth, years * 12) > on) years -= 1;
+  return years;
+}
+
+/**
+ * n 歳になる日（法律上）。
+ *
+ * 年齢計算ニ関スル法律と民法143条により、年齢は応当日の「前日」の満了で加算する。
+ * 4月1日生まれが早生まれになるのはこれが理由。ただし応当日が存在しない場合
+ * （2月29日生まれの平年）は、前日ではなくその月の末日に満了する。
+ */
+export function legalBirthday(birth, years) {
+  const target = addMonths(birth, years * 12);
+  const exists = target.getUTCDate() === birth.getUTCDate();
+  return exists ? addDays(target, -1) : target;
+}
+
+/** 法律上の年齢。満年齢より 1 日早く上がる。 */
+export function legalAge(birth, on) {
+  const base = age(birth, on);
+  return legalBirthday(birth, base + 1) <= on ? base + 1 : base;
+}
+
+/** 数え年。生まれた時点で 1 歳、元日ごとに加算する。 */
+export function kazoedoshi(birth, on) {
+  return on.getUTCFullYear() - birth.getUTCFullYear() + 1;
+}
+
+/** 次の誕生日。基準日が誕生日当日ならその日を返さず、翌年を返す。 */
+export function nextBirthday(birth, on) {
+  return addMonths(birth, (age(birth, on) + 1) * 12);
+}
+
+/** 基準日が誕生日当日か。 */
+export function isBirthday(birth, on) {
+  return addMonths(birth, age(birth, on) * 12).getTime() === on.getTime();
+}
+
+// ---------------------------------------------------------------- 学年
+
+/** 4月2日〜翌年4月1日生まれが同じ学年になる。その区切りの年を返す。 */
+export function schoolCohortYear(birth) {
+  const month = birth.getUTCMonth() + 1;
+  const day = birth.getUTCDate();
+  const startsThisYear = month > 4 || (month === 4 && day >= 2);
+  return startsThisYear ? birth.getUTCFullYear() : birth.getUTCFullYear() - 1;
+}
+
+/** 早生まれ（1月1日〜4月1日生まれ）か。 */
+export function isHayaumare(birth) {
+  const month = birth.getUTCMonth() + 1;
+  return month < 4 || (month === 4 && birth.getUTCDate() === 1);
+}
+
+const GRADE_NAMES = [
+  "小学1年", "小学2年", "小学3年", "小学4年", "小学5年", "小学6年",
+  "中学1年", "中学2年", "中学3年",
+  "高校1年", "高校2年", "高校3年",
+];
+
+/** 基準日が属する年度における学年。小1〜高3の範囲外なら null。 */
+export function schoolGrade(birth, on) {
+  const grade = fiscalYear(on) - schoolCohortYear(birth) - 6;
+  return grade >= 1 && grade <= GRADE_NAMES.length ? GRADE_NAMES[grade - 1] : null;
+}

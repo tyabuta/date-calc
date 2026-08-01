@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>計算の仕様 | 日付計算ツール</title>
     <meta name="description" content="2つの日付の差分日数と、日付の加減算をブラウザ上で計算します。" />
-    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=4d6645b72f13b25f26c0" />
+    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=900a5b3d45764ddc1dcc" />
   </head>
   <body>
     <header class="site-header">
@@ -48,6 +48,30 @@
 どれから数えても同じ <code>1ヶ月</code> になってしまい、区別がつかなくなるためです。
 月の長さが一定でない以上どこかで妥協が要る部分なので、厳密さが必要なときは
 大きく表示している「日数」を使ってください。</p>
+<h3 id="he-li">和暦</h3>
+<p>元号のテーブルは持たず、ブラウザ内蔵の和暦カレンダー
+(<code>Intl.DateTimeFormat("ja-JP-u-ca-japanese")</code>) に任せています。改元は年の途中で
+起きるので、年ではなく日付で切り替わります。</p>
+<table><thead><tr><th>日付</th><th>和暦</th></tr></thead><tbody>
+<tr><td>1912年7月29日 → 30日</td><td>明治45年 → <strong>大正元年</strong></td></tr>
+<tr><td>1926年12月24日 → 25日</td><td>大正15年 → <strong>昭和元年</strong></td></tr>
+<tr><td>1989年1月7日 → 8日</td><td>昭和64年 → <strong>平成元年</strong></td></tr>
+<tr><td>2019年4月30日 → 5月1日</td><td>平成31年 → <strong>令和元年</strong></td></tr>
+</tbody></table>
+<p>明治6年(1873年)より前の日本は旧暦を使っていたため、それ以前の日付は
+西暦との対応が単純ではありません。表示はしますが扱いには注意してください。</p>
+<h3 id="nian-ling">年齢</h3>
+<p>3つの数え方を出し分けています。</p>
+<table><thead><tr><th>表示</th><th>加算されるタイミング</th></tr></thead><tbody>
+<tr><td>満年齢</td><td>誕生日当日。一般的な数え方</td></tr>
+<tr><td>法律上の年齢</td><td><strong>誕生日の前日</strong>。年齢計算ニ関スル法律と民法143条による</td></tr>
+<tr><td>数え年</td><td>生まれた時点で1歳、以降は元日ごと</td></tr>
+</tbody></table>
+<p>4月1日生まれが早生まれになるのは、法律上は3月31日に歳を取るためです。
+学年の区切り（4月2日〜翌年4月1日生まれが同学年）もこれに対応しています。</p>
+<p><strong>2月29日生まれ</strong>は、平年には応当日がないため2月28日に加算します
+（民法143条2項の「月の末日に満了する」に相当）。この場合は前日ではなく
+末日そのものなので、満年齢と法律上の年齢が同じ日に上がります。</p>
 <h3 id="taimuzonnoxi-i">タイムゾーンの扱い</h3>
 <p>日付はすべて UTC の 0 時として解釈しています。ローカル時刻のまま引き算すると、
 夏時間のある地域で 1 日ずれることがあるためです。入力した日付の見た目と

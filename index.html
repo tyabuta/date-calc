@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>日付計算ツール</title>
     <meta name="description" content="2つの日付の差分日数と、日付の加減算をブラウザ上で計算します。" />
-    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=4d6645b72f13b25f26c0" />
+    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=900a5b3d45764ddc1dcc" />
   </head>
   <body>
     <header class="site-header">
@@ -77,12 +77,49 @@
   <output id="add-result" class="result" aria-live="polite"></output>
 </section>
 
+<section class="card">
+  <h2>日付を調べる</h2>
+  <div class="fields">
+    <div class="field">
+      <label for="info-date">日付</label>
+      <div class="input-row">
+        <input type="date" id="info-date" />
+        <button type="button" class="today" data-target="info-date" title="今日にする">今日</button>
+      </div>
+    </div>
+  </div>
+
+  <output id="info-result" class="result" aria-live="polite"></output>
+</section>
+
+<section class="card">
+  <h2>年齢を計算する</h2>
+  <div class="fields">
+    <div class="field">
+      <label for="age-birth">生年月日</label>
+      <div class="input-row">
+        <input type="date" id="age-birth" />
+        <button type="button" class="today" data-target="age-birth" title="今日にする">今日</button>
+      </div>
+    </div>
+    <div class="field">
+      <label for="age-on">基準日</label>
+      <div class="input-row">
+        <input type="date" id="age-on" />
+        <button type="button" class="today" data-target="age-on" title="今日にする">今日</button>
+      </div>
+    </div>
+  </div>
+
+  <output id="age-result" class="result" aria-live="polite"></output>
+</section>
+
 <div class="note"><p>計算はすべてブラウザ内で完結します。入力した日付がサーバーに送られることはありません。</p>
 </div>
 </main>
 
     
-<script type="module" src="https://tyabuta.github.io/date-calc/app.js?h=0117a66a07060ea5ee5d"></script>
+<script type="module" src="https://tyabuta.github.io/date-calc/app.js?h=acc17451b2c8ed72064f"></script>
 
   </body>
 </html>

@@ -263,6 +263,10 @@ button:focus-visible {
 
 .row .label {
   color: var(--muted);
+  /* 狭い画面で「次の誕生日」が「次の誕生 / 日」と割れないようにする。
+     行が入りきらないときは値のほうを折り返させる。 */
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .row .value {
