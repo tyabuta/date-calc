@@ -69,6 +69,21 @@ main {
   color: var(--accent);
 }
 
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.toolbar select {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.4rem;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);

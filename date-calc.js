@@ -26,11 +26,33 @@ export function formatIso(date) {
   return date.toISOString().slice(0, 10);
 }
 
-export function formatJa(date) {
+/** 選べる表示書式。値は localStorage にそのまま入る。 */
+export const DATE_STYLES = ["ja", "slash", "dash"];
+
+const pad2 = (n) => String(n).padStart(2, "0");
+
+/**
+ * 表示用の日付。曜日は書式によらず常に付ける。
+ *
+ * "ja"    -> 2026年8月1日(土)
+ * "slash" -> 2026/08/01(土)
+ * "dash"  -> 2026-08-01(土)
+ */
+export function formatDate(date, style = "ja") {
   const y = date.getUTCFullYear();
   const m = date.getUTCMonth() + 1;
   const d = date.getUTCDate();
-  return `${y}年${m}月${d}日(${WEEKDAY_NAMES[date.getUTCDay()]})`;
+  const body =
+    style === "slash"
+      ? `${y}/${pad2(m)}/${pad2(d)}`
+      : style === "dash"
+        ? `${y}-${pad2(m)}-${pad2(d)}`
+        : `${y}年${m}月${d}日`;
+  return `${body}(${WEEKDAY_NAMES[date.getUTCDay()]})`;
+}
+
+export function formatJa(date) {
+  return formatDate(date, "ja");
 }
 
 export function today(now = new Date()) {

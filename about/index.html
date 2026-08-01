@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>計算の仕様 | 日付計算ツール</title>
     <meta name="description" content="2つの日付の差分日数と、日付の加減算をブラウザ上で計算します。" />
-    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=900a5b3d45764ddc1dcc" />
+    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=c6742239de6b1fe4ee40" />
   </head>
   <body>
     <header class="site-header">
@@ -19,6 +19,19 @@
 <article class="card prose">
   <h2>計算の仕様</h2>
   <p>このページは Zola が Markdown から生成しています。</p>
+<h3 id="biao-shi-xing-shi">表示形式</h3>
+<p>右上の「表示形式」で、結果に出る日付の書き方を選べます。選択はブラウザに保存され、
+次に開いたときも維持されます。</p>
+<table><thead><tr><th>選択</th><th>表示</th></tr></thead><tbody>
+<tr><td><code>2026年8月1日</code></td><td>2026年8月1日(土)</td></tr>
+<tr><td><code>2026/08/01</code></td><td>2026/08/01(土)</td></tr>
+<tr><td><code>2026-08-01</code></td><td>2026-08-01(土)</td></tr>
+</tbody></table>
+<p>曜日はどの形式でも付きます。和暦は元号の書き方なので、この設定では変わりません。</p>
+<p>なお<strong>日付の入力欄そのものの表示形式は、このページからは変更できません。</strong>
+<code>&lt;input type="date"&gt;</code> の見た目はブラウザと OS の言語設定で決まる仕様で、
+日本語環境なら <code>2026/08/01</code>、英語環境なら <code>08/01/2026</code> と表示されます。
+上の設定が効くのは結果の表示だけです。</p>
 <h3 id="ru-li-nocao-zuo">入力の操作</h3>
 <ul>
 <li><strong>今日</strong> ボタンで、その日付欄を今日の日付にします。</li>
