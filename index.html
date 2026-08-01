@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>日付計算ツール</title>
+    <meta name="description" content="2つの日付の差分日数と、日付の加減算をブラウザ上で計算します。" />
+    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=6fac83dc08e374c64b4c" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-title" href="https://tyabuta.github.io/date-calc/">日付計算ツール</a>
+      <nav>
+        <a href="https://tyabuta.github.io/date-calc/about/">仕様</a>
+      </nav>
+    </header>
+
+    <main>
+<section class="card">
+  <h2>日数を数える</h2>
+  <div class="fields">
+    <label>
+      開始日
+      <input type="date" id="diff-from" />
+    </label>
+    <button type="button" class="swap" id="diff-swap" title="開始日と終了日を入れ替える">⇅</button>
+    <label>
+      終了日
+      <input type="date" id="diff-to" />
+    </label>
+  </div>
+
+  <output id="diff-result" class="result" aria-live="polite"></output>
+</section>
+
+<section class="card">
+  <h2>日付を足し引きする</h2>
+  <div class="fields">
+    <label>
+      基準日
+      <input type="date" id="add-base" />
+    </label>
+    <label>
+      日数
+      <input type="number" id="add-days" value="100" step="1" />
+    </label>
+    <label>
+      向き
+      <select id="add-dir">
+        <option value="1">後</option>
+        <option value="-1">前</option>
+      </select>
+    </label>
+  </div>
+
+  <output id="add-result" class="result" aria-live="polite"></output>
+</section>
+
+<div class="note"><p>計算はすべてブラウザ内で完結します。入力した日付がサーバーに送られることはありません。</p>
+</div>
+</main>
+
+    <footer class="site-footer">
+      <p>Zola で生成 / ソース: tyabuta&#x2F;claude-web</p>
+    </footer>
+
+    
+<script type="module" src="https://tyabuta.github.io/date-calc/app.js?h=487e5e39f8e8ca91e175"></script>
+
+  </body>
+</html>

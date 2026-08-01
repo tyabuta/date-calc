@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>計算の仕様 | 日付計算ツール</title>
+    <meta name="description" content="2つの日付の差分日数と、日付の加減算をブラウザ上で計算します。" />
+    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=6fac83dc08e374c64b4c" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-title" href="https://tyabuta.github.io/date-calc/">日付計算ツール</a>
+      <nav>
+        <a href="https://tyabuta.github.io/date-calc/about/">仕様</a>
+      </nav>
+    </header>
+
+    <main>
+<article class="card prose">
+  <h2>計算の仕様</h2>
+  <p>このページは Zola が Markdown から生成しています。</p>
+<h3 id="ri-shu-noshu-efang">日数の数え方</h3>
+<table><thead><tr><th>表示</th><th>定義</th></tr></thead><tbody>
+<tr><td>大きな数字</td><td>終了日 − 開始日 の絶対値。開始日当日は数えない</td></tr>
+<tr><td>両端を含む日数</td><td>上の値 + 1。「初日も最終日も数える」数え方</td></tr>
+<tr><td>平日のみ</td><td>両端を含む区間から土日を除いた日数。祝日は考慮しない</td></tr>
+<tr><td>年月日の内訳</td><td>下の「月をまたぐときの数え方」を参照</td></tr>
+</tbody></table>
+<p>たとえば 4月1日から4月2日なら、差分は <code>1日</code>、両端を含むと <code>2日</code> です。</p>
+<h3 id="yue-womatagutokinoshu-efang">月をまたぐときの数え方</h3>
+<p>「開始日と同じ日に到達した回数」で月数を数え、残りを日数にします。
+終了日の日が開始日の日より小さければ、その月はまだ到達していないと見なします。</p>
+<table><thead><tr><th>期間</th><th>内訳</th></tr></thead><tbody>
+<tr><td>1月28日 → 2月28日</td><td><code>1ヶ月</code></td></tr>
+<tr><td>1月31日 → 2月28日</td><td><code>28日</code></td></tr>
+<tr><td>1月31日 → 3月1日</td><td><code>1ヶ月1日</code></td></tr>
+</tbody></table>
+<p>1月31日から2月28日を <code>1ヶ月</code> としない理由は、そうすると1月28日・29日・30日・31日の
+どれから数えても同じ <code>1ヶ月</code> になってしまい、区別がつかなくなるためです。
+月の長さが一定でない以上どこかで妥協が要る部分なので、厳密さが必要なときは
+大きく表示している「日数」を使ってください。</p>
+<h3 id="taimuzonnoxi-i">タイムゾーンの扱い</h3>
+<p>日付はすべて UTC の 0 時として解釈しています。ローカル時刻のまま引き算すると、
+夏時間のある地域で 1 日ずれることがあるためです。入力した日付の見た目と
+計算結果は常に一致します。</p>
+<h3 id="xiang-ding-fan-wei">想定範囲</h3>
+<p>内部では JavaScript の <code>Date</code> を使っています。西暦 1000 年から 9999 年までは
+<code>&lt;input type="date"&gt;</code> 側の制約でそのまま扱えます。うるう年は自動的に考慮されます。</p>
+
+</article>
+</main>
+
+    <footer class="site-footer">
+      <p>Zola で生成 / ソース: tyabuta&#x2F;claude-web</p>
+    </footer>
+
+    
+  </body>
+</html>
