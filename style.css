@@ -33,11 +33,14 @@ body {
 }
 
 .site-header,
-main,
-.site-footer {
+main {
   max-width: 44rem;
   margin: 0 auto;
   padding: 0 1.25rem;
+}
+
+main {
+  padding-bottom: 3rem;
 }
 
 .site-header {
@@ -308,8 +311,3 @@ button:focus-visible {
   font-size: 0.9em;
 }
 
-.site-footer {
-  padding-bottom: 3rem;
-  color: var(--muted);
-  font-size: 0.8rem;
-}
