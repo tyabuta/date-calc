@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>計算の仕様 | 日付計算ツール</title>
     <meta name="description" content="2つの日付の差分日数と、日付の加減算をブラウザ上で計算します。" />
-    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=6fac83dc08e374c64b4c" />
+    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=b46ae50f681da9a2d922" />
   </head>
   <body>
     <header class="site-header">
@@ -19,6 +19,15 @@
 <article class="card prose">
   <h2>計算の仕様</h2>
   <p>このページは Zola が Markdown から生成しています。</p>
+<h3 id="ru-li-nocao-zuo">入力の操作</h3>
+<ul>
+<li><strong>今日</strong> ボタンで、その日付欄を今日の日付にします。</li>
+<li><strong>スライダー</strong>で日付や日数を1日ずつ動かせます。つまみを掴むほか、
+フォーカスしてから矢印キーでも動きます。</li>
+<li>「日数を数える」のスライダーは<strong>終了日</strong>を動かします。開始日は変わりません。</li>
+<li>スライダーの範囲は既定で ±365日ですが、それを超える日付を直接入力すると
+自動的に広がります。つまみの位置が実際の値とずれることはありません。</li>
+</ul>
 <h3 id="ri-shu-noshu-efang">日数の数え方</h3>
 <table><thead><tr><th>表示</th><th>定義</th></tr></thead><tbody>
 <tr><td>大きな数字</td><td>終了日 − 開始日 の絶対値。開始日当日は数えない</td></tr>

@@ -87,13 +87,30 @@ main,
   gap: 0.75rem;
 }
 
-.fields label {
+.field {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  flex: 1 1 10rem;
+  flex: 1 1 12rem;
+}
+
+.field.narrow {
+  flex: 0 1 6rem;
+}
+
+.field label {
   font-size: 0.8rem;
   color: var(--muted);
+}
+
+.input-row {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.input-row input {
+  flex: 1;
+  min-width: 0;
 }
 
 input,
@@ -109,16 +126,15 @@ select {
 
 input:focus-visible,
 select:focus-visible,
-.swap:focus-visible {
+button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
 
-.swap {
+.swap,
+.today {
   flex: 0 0 auto;
-  font-size: 1.1rem;
   line-height: 1;
-  padding: 0.65rem 0.7rem;
   color: var(--muted);
   background: var(--bg);
   border: 1px solid var(--border);
@@ -126,9 +142,81 @@ select:focus-visible,
   cursor: pointer;
 }
 
-.swap:hover {
+.swap {
+  font-size: 1.1rem;
+  padding: 0.65rem 0.7rem;
+  align-self: flex-end;
+  margin-bottom: 0.05rem;
+}
+
+.today {
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 0 0.6rem;
+  white-space: nowrap;
+}
+
+.swap:hover,
+.today:hover {
   color: var(--accent);
   border-color: var(--accent);
+}
+
+/* 微調整用のスライダー。範囲は入力値に合わせて JS 側で引き直す。 */
+.slider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.slider label {
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.slider input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.slider input[type="range"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.slider output {
+  flex: 0 0 5rem;
+  text-align: right;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+/* 狭い画面では横並びが崩れるので素直に縦へ積む。入れ替えボタンは
+   2つの日付欄の間に横一杯で置いたほうが役割が分かりやすい。 */
+@media (max-width: 30rem) {
+  .fields {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .field,
+  .field.narrow {
+    flex: 1 1 auto;
+  }
+
+  .swap {
+    align-self: stretch;
+    margin-bottom: 0;
+    padding: 0.4rem;
+  }
 }
 
 .result {

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>日付計算ツール</title>
     <meta name="description" content="2つの日付の差分日数と、日付の加減算をブラウザ上で計算します。" />
-    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=6fac83dc08e374c64b4c" />
+    <link rel="stylesheet" href="https://tyabuta.github.io/date-calc/style.css?h=b46ae50f681da9a2d922" />
   </head>
   <body>
     <header class="site-header">
@@ -19,15 +19,27 @@
 <section class="card">
   <h2>日数を数える</h2>
   <div class="fields">
-    <label>
-      開始日
-      <input type="date" id="diff-from" />
-    </label>
+    <div class="field">
+      <label for="diff-from">開始日</label>
+      <div class="input-row">
+        <input type="date" id="diff-from" />
+        <button type="button" class="today" data-target="diff-from" title="今日にする">今日</button>
+      </div>
+    </div>
     <button type="button" class="swap" id="diff-swap" title="開始日と終了日を入れ替える">⇅</button>
-    <label>
-      終了日
-      <input type="date" id="diff-to" />
-    </label>
+    <div class="field">
+      <label for="diff-to">終了日</label>
+      <div class="input-row">
+        <input type="date" id="diff-to" />
+        <button type="button" class="today" data-target="diff-to" title="今日にする">今日</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slider">
+    <label for="diff-slider">終了日を動かす</label>
+    <input type="range" id="diff-slider" step="1" />
+    <output id="diff-offset" for="diff-slider"></output>
   </div>
 
   <output id="diff-result" class="result" aria-live="polite"></output>
@@ -36,21 +48,30 @@
 <section class="card">
   <h2>日付を足し引きする</h2>
   <div class="fields">
-    <label>
-      基準日
-      <input type="date" id="add-base" />
-    </label>
-    <label>
-      日数
-      <input type="number" id="add-days" value="100" step="1" />
-    </label>
-    <label>
-      向き
+    <div class="field">
+      <label for="add-base">基準日</label>
+      <div class="input-row">
+        <input type="date" id="add-base" />
+        <button type="button" class="today" data-target="add-base" title="今日にする">今日</button>
+      </div>
+    </div>
+    <div class="field narrow">
+      <label for="add-days">日数</label>
+      <input type="number" id="add-days" value="100" step="1" min="0" />
+    </div>
+    <div class="field narrow">
+      <label for="add-dir">向き</label>
       <select id="add-dir">
         <option value="1">後</option>
         <option value="-1">前</option>
       </select>
-    </label>
+    </div>
+  </div>
+
+  <div class="slider">
+    <label for="add-slider">日数を動かす</label>
+    <input type="range" id="add-slider" min="0" step="1" />
+    <output id="add-amount" for="add-slider"></output>
   </div>
 
   <output id="add-result" class="result" aria-live="polite"></output>
@@ -65,7 +86,7 @@
     </footer>
 
     
-<script type="module" src="https://tyabuta.github.io/date-calc/app.js?h=487e5e39f8e8ca91e175"></script>
+<script type="module" src="https://tyabuta.github.io/date-calc/app.js?h=0117a66a07060ea5ee5d"></script>
 
   </body>
 </html>

@@ -92,6 +92,21 @@ export function countWeekdays(from, to) {
   return count;
 }
 
+/**
+ * スライダーの端の値。現在値を必ず含む step の倍数を返す。
+ *
+ * 範囲を固定にすると、範囲外の日付を直接入力したときにつまみが端に張りついて
+ * 実態とずれる。入力に合わせて広げることで、つまみの位置が常に意味を持つ。
+ */
+export function sliderBound(value, step = 365) {
+  return Math.max(step, Math.ceil(Math.abs(value) / step) * step);
+}
+
+/** スライダーの脇に出す "+30日" 形式のラベル。 */
+export function formatOffset(days) {
+  return `${days >= 0 ? "+" : "-"}${Math.abs(days).toLocaleString("ja-JP")}日`;
+}
+
 /** 年月日の内訳を "1年2ヶ月3日" の形に整える。すべて 0 なら "0日"。 */
 export function formatBreakdown({ years, months, days }) {
   const parts = [];
